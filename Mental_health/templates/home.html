@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Mentora</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #E3FDFD;
+        }
+        header {
+            background-color: #2E8B8B;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        nav {
+            background-color: #0056b3;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 30px;
+        }
+        .nav-left, .nav-right {
+            display: flex;
+            gap: 20px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .hero {
+            text-align: center;
+            padding: 50px 20px 20px;
+        }
+        .card-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 250px;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .card img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 20px;
+        }
+        .card a {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #1ABC9C;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+        .card a:hover {
+            background-color: #0056b3;
+        }
+        section {
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin: auto;
+            text-align: center;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 15px 10px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Mentora – It's okay to not be okay. Healing starts here. </h1>
+    </header>
+
+    <nav>
+        <div class="nav-left">
+            <a href="#home">Home</a>
+            <a href="#about">About Us</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div class="nav-right">
+            <a href="#">Login</a> <!-- placeholder link for now -->
+            <a href="#">Sign Up</a> <!-- placeholder link for now -->
+        </div>
+    </nav>
+
+    <div class="hero" id="home">
+        <h2>Welcome to Your Mental Wellness Companion</h2>
+        <p>Explore tools designed to support your mental health and emotional well-being.</p>
+    </div>
+
+    <div class="card-container">
+        <div class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712100.png" alt="Chatbot">
+            <h2>Chat with AI</h2>
+            <a href="{% url 'chat_page' %}">Start Chat</a>
+        </div>
+        <div class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/4042/4042910.png" alt="Psychometric Test">
+            <h2>Take Test</h2>
+            <a href="{% url 'take_test' %}">Start Test</a>
+        </div>
+        <div class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828919.png" alt="Dashboard">
+            <h2>View Dashboard</h2>
+            <a href="{% url 'dashboard_insights' %}">Go to Dashboard</a>
+        </div>
+    </div>
+
+    <section id="about">
+        <h2>About Us</h2>
+        <p>
+            We are dedicated to providing accessible and AI-powered mental health tools to help individuals
+            manage stress, anxiety, and emotional challenges. Our platform is built with empathy and research-backed insights
+            to guide you through your mental health journey.
+        </p>
+    </section>
+
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <p>
+            Have questions or feedback? We'd love to hear from you!<br>
+            📧 Email: subiksham88@gmail.com<br>
+            📞 Phone: +91 9597285457
+        </p>
+    </section>
+
+    <footer>
+        &copy; 2025 Mentora. All Rights Reserved.
+    </footer>
+
+</body>
+</html>

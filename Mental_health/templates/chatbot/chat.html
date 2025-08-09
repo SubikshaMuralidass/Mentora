@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+    document.cookie = "csrftoken={{ csrf_token }}";
+    </script>
+    <title>bot friend</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background-color: #E3FDFD; 
+        }
+        .chat-container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+        }
+        .chat-header {
+            background: #2E8B8B;
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+        }
+        .chat-history { 
+            height: 400px; 
+            padding: 20px; 
+            overflow-y: auto; 
+            border-bottom: 1px solid #eee;
+        }
+        .message { 
+            margin: 15px 0; 
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+        }
+        .user-message { 
+            background:  #2E8B8B;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        .bot-message { 
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #dee2e6;
+        }
+        .input-container { 
+            display: flex; 
+            padding: 20px;
+            gap: 10px;
+        }
+        #messageInput { 
+            flex: 1; 
+            padding: 12px; 
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        #sendButton { 
+            padding: 12px 24px; 
+            background: #2E8B8B;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #sendButton:hover {
+            background: #2E8B8B;;
+        }
+        #sendButton:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .typing-indicator {
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <a href="home.html" style="
+    display: inline-block;
+    padding: 10px 20px;
+    background-color:  #2E8B8B;;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+">← Back to Homepage</a>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>Your AI companion</h1>
+            <p>I'm here to help.</p>
+        </div>
+        
+        <div id="chatHistory" class="chat-history">
+            {% for chat in chat_history %}
+                <div class="message user-message">{{ chat.message }}</div>
+                <div class="message bot-message">{{ chat.response }}</div>
+            {% endfor %}
+            
+            {% if not chat_history %}
+                <div class="message bot-message">
+                    Hello!, How can I help you today?
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="input-container">
+            <input type="text" id="messageInput" placeholder="Type your message here..." />
+            <button id="sendButton">Send</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('sendButton').addEventListener('click', function(e) {
+        e.preventDefault();
+        sendMessage();
+        });
+
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+        e.preventDefault();  // prevent refresh
+        sendMessage();
+        }
+        });
+
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Disable send button
+            const sendButton = document.getElementById('sendButton');
+            sendButton.disabled = true;
+            sendButton.textContent = 'Sending...';
+            
+            // Add user message to chat
+            addMessageToChat(message, 'user-message');
+            input.value = '';
+            
+            // Add typing indicator
+            const typingDiv = addMessageToChat('Typing...', 'bot-message typing-indicator');
+            
+            // Send to server
+            fetch('/chatbot/send_message/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({message: message})
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove typing indicator
+                typingDiv.remove();
+                
+                if (data.success) {
+                    addMessageToChat(data.bot_response, 'bot-message');
+                } else {
+                    addMessageToChat('Sorry, I encountered an error: ' + (data.error || 'Unknown error'), 'bot-message');
+                }
+            })
+            .catch(error => {
+                // Remove typing indicator
+                typingDiv.remove();
+                addMessageToChat('Sorry, I could not send your message. Please try again.', 'bot-message');
+            })
+            .finally(() => {
+                // Re-enable send button
+                sendButton.disabled = false;
+                sendButton.textContent = 'Send';
+            });
+        }
+
+        function addMessageToChat(message, className) {
+            const chatHistory = document.getElementById('chatHistory');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + className;
+            messageDiv.textContent = message;
+            chatHistory.appendChild(messageDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            return messageDiv;
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>
